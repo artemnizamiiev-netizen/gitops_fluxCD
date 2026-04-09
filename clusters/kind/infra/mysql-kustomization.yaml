@@ -1,0 +1,16 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-mysql
+  namespace: flux-system
+spec:
+  interval: 5m
+  retryInterval: 1m
+  timeout: 3m
+  prune: true
+  wait: true
+  path: ./clusters/kind/infra/mysql
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system

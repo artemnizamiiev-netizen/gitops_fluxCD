@@ -1,0 +1,51 @@
+nameOverride: frontend
+
+replicaCount: 1
+
+image:
+  repository: frontend
+  tag: local
+  pullPolicy: IfNotPresent
+
+containerPort: 5000
+
+service:
+  type: ClusterIP
+  port: 5000
+  targetPort: 5000
+
+env:
+  CONFIGURATION_SETUP: config.ProductionConfig
+  USER_SERVICE_URL: http://user-service:5001
+  PRODUCT_SERVICE_URL: http://product-service:5002
+  ORDER_SERVICE_URL: http://order-service:5003
+
+secretEnv:
+  SECRET_KEY: dev-frontend-secret-key-123456789
+  WTF_CSRF_SECRET_KEY: dev-frontend-csrf-secret-key-123456789
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+readinessProbe:
+  path: /healthz
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+livenessProbe:
+  path: /healthz
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+serviceAccount:
+  create: true
+  name: frontend

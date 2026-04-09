@@ -1,0 +1,5 @@
+apiVersion: v2
+type: application
+description: "Chart for backend microservices"
+name: common-service
+version: 0.1.0

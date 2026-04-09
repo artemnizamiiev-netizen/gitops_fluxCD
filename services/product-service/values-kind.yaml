@@ -1,0 +1,47 @@
+nameOverride: product-service
+
+replicaCount: 1
+
+image:
+  repository: product-service
+  tag: local
+  pullPolicy: IfNotPresent
+
+containerPort: 5002
+
+service:
+  type: ClusterIP
+  port: 5002
+  targetPort: 5002
+
+env:
+  CONFIGURATION_SETUP: config.ProductionConfig
+
+secretEnv:
+  DATABASE_URL: mysql+pymysql://app_user:app_password@mysql.default.svc.cluster.local:3306/appdb
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+readinessProbe:
+  path: /healthz
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+livenessProbe:
+  path: /healthz
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+serviceAccount:
+  create: true
+  name: product-service
